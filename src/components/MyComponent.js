@@ -8,7 +8,8 @@ class MyComponent extends React.Component {
   };
 
   handleOnClick(event) {
-    // console.log(">>> Click me button", event.target);
+    console.log(">>> Click me button", event.target);
+    // console.log("My name is ", this.state.name); error
 
     // merge state => react class
     this.setState({
@@ -20,19 +21,30 @@ class MyComponent extends React.Component {
     // console.log(event.pageX);
   }
 
+  handleOnChangeInput = (event) => {
+    console.log(event.target.value);
+    this.setState({
+      name: event.target.value,
+    });
+  };
+  handleOnSubmit = (event) => {
+    event.preventDefault();
+    console.log(this.state);
+  };
+
   //JSX
   render() {
     return (
       <div>
         My name is {this.state.name} and I'm {this.state.age}
-        <button onMouseOver={this.handleOnMouseOver}>Hover me</button>
-        <button
-          onClick={(event) => {
-            this.handleOnClick(event);
-          }}
-        >
-          Click me
-        </button>
+        {/* <button onClick={this.handleOnClick}>Click me</button> error */}
+        <form onSubmit={(event) => this.handleOnSubmit(event)}>
+          <input
+            type="text"
+            onChange={(event) => this.handleOnChangeInput(event)}
+          />
+          <button>Submit</button>
+        </form>
       </div>
     );
   }
