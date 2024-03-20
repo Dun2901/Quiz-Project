@@ -9,15 +9,11 @@ import {
   SidebarContent,
 } from "react-pro-sidebar";
 
-import {
-  FaTachometerAlt,
-  FaGem,
-  FaList,
-  FaGithub,
-  FaRegLaughWink,
-  FaHeart,
-} from "react-icons/fa";
+import { FaGem, FaGithub } from "react-icons/fa";
+import { DiReact } from "react-icons/di";
+import { MdDashboard } from "react-icons/md";
 import sidebarBg from "../../assets/bg2.jpg";
+import "./SideBar.scss";
 
 const SideBar = (props) => {
   const { image, collapsed, toggled, handleToggleSidebar } = props;
@@ -43,28 +39,27 @@ const SideBar = (props) => {
               whiteSpace: "nowrap",
             }}
           >
-            Hoi Dan IT
+            <DiReact size={"3em"} color={"00bfff"} />
+            <span>KoPhaiDun</span>
           </div>
         </SidebarHeader>
 
         <SidebarContent>
           <Menu iconShape="circle">
             <MenuItem
-              icon={<FaTachometerAlt />}
-              suffix={<span className="badge red">New</span>}
+              icon={<MdDashboard />}
+              // suffix={<span className="badge red">New</span>}
             >
               dashboard
             </MenuItem>
-            <MenuItem icon={<FaGem />}> components </MenuItem>
-          </Menu>
-          <Menu iconShape="circle">
             <SubMenu
-              suffix={<span className="badge yellow">3</span>}
-              icon={<FaRegLaughWink />}
+              // suffix={<span className="badge yellow">3</span>}
+              icon={<FaGem />}
+              title="features"
             >
-              <MenuItem> 1</MenuItem>
-              <MenuItem> 2</MenuItem>
-              <MenuItem> 3</MenuItem>
+              <MenuItem> Quản lí Users</MenuItem>
+              <MenuItem> Quản lí Bài Quiz</MenuItem>
+              <MenuItem> Quản lí câu hỏi</MenuItem>
             </SubMenu>
           </Menu>
         </SidebarContent>
@@ -77,7 +72,7 @@ const SideBar = (props) => {
             }}
           >
             <a
-              href="https://github.com/azouaoui-med/react-pro-sidebar"
+              href="https://github.com/Dun2901"
               target="_blank"
               className="sidebar-btn"
               rel="noopener noreferrer"
@@ -90,7 +85,7 @@ const SideBar = (props) => {
                   overflow: "hidden",
                 }}
               >
-                viewSource
+                Link to me
               </span>
             </a>
           </div>
