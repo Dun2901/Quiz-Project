@@ -1,3 +1,4 @@
+import "./ManageUser.scss";
 import ModalCreateUser from "./ModalCreateUser";
 
 const ManageUser = () => {
