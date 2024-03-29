@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import _ from "lodash";
-import { postCreateNewUser } from "../../../services/apiService";
+import { putUpdateUser } from "../../../services/apiService";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import { toast } from "react-toastify";
@@ -39,6 +39,7 @@ const ModalUpdateUser = (props) => {
     setRole("USER");
     setImage("");
     setPreviewImage("");
+    props.resetUpdateData();
   };
   const handleUploadImage = (event) => {
     if (event.target && event.target.files && event.target.files[0]) {
@@ -61,12 +62,8 @@ const ModalUpdateUser = (props) => {
       toast.error("Invalid Email");
       return;
     }
-    if (!password) {
-      toast.error("Invalid Password");
-      return;
-    }
 
-    let data = await postCreateNewUser(email, password, username, role, image);
+    let data = await putUpdateUser(dataUpdate.id, username, role, image);
     // console.log(">>> check res: ", data);
 
     if (data && data.EC === 0) {
@@ -79,7 +76,7 @@ const ModalUpdateUser = (props) => {
     }
   };
 
-  console.log("check render: ", props.dataUpdate);
+  // console.log("check render: ", props.dataUpdate);
   return (
     <>
       <Modal
