@@ -1,14 +1,13 @@
-.login-container {
+.register-container {
   .header {
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    padding: 0 100px;
     height: 45px;
+    text-align: right;
+    padding: 5px 100px 0 100px;
 
     button {
       padding: 3px 15px;
       margin-left: 15px;
+
       border: 2px solid;
     }
   }
@@ -33,6 +32,7 @@
 
     button {
       width: 100%;
+      width: 100%;
       height: 40px;
       border: none;
       border-radius: 5px;
@@ -41,18 +41,18 @@
       background: black;
     }
 
-    .forgot-password {
-      text-decoration: underline;
+    .back {
       cursor: pointer;
     }
 
-    .back {
-      display: flex;
-      align-items: center;
-      cursor: pointer;
+    .pass-group {
+      position: relative;
 
-      span {
-        margin-left: 5px;
+      .icons-eye {
+        cursor: pointer;
+        position: absolute;
+        right: 10px;
+        bottom: 10px;
       }
     }
   }
