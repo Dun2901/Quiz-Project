@@ -40,7 +40,6 @@ const Register = () => {
   const handleRegister = async () => {
     // validate
     const isValidEmail = validateEmail(email);
-    console.log(isValidEmail);
 
     if (!isValidEmail) {
       toast.error("Invalid Email");
