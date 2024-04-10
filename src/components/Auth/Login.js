@@ -1,15 +1,18 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
 import { FaArrowLeft } from "react-icons/fa";
 import { postLogin } from "../../services/apiService";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./Login.scss";
+import { doLogin } from "../../redux/action/userAction";
 
 const Login = (props) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const validateEmail = (email) => {
     return String(email)
@@ -35,9 +38,11 @@ const Login = (props) => {
     //submit  apis
     let data = await postLogin(email, password);
     if (data && data.EC === 0) {
+      dispatch(doLogin(data));
       toast.success(data.EM);
       navigate("/");
     }
+
     if (data && data.EC !== 0) {
       toast.error(data.EM);
     }
