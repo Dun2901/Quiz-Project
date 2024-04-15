@@ -1,9 +1,11 @@
 import { useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useLocation } from "react-router-dom";
 import { getDataQuiz } from "../../services/apiService";
 import _ from "lodash";
+import "./DetailQuiz.scss";
 
 const DetailQuiz = () => {
+  const location = useLocation();
   const params = useParams();
   const quizId = params.id;
 
@@ -13,7 +15,7 @@ const DetailQuiz = () => {
 
   const fetchQuestions = async () => {
     const res = await getDataQuiz(quizId);
-    console.log("check question: ", res);
+    // console.log("check question: ", res);
 
     if (res && res.EC === 0) {
       const raw = res.DT;
@@ -32,10 +34,10 @@ const DetailQuiz = () => {
               image = item.image;
             }
             answers.push(item.answers);
-            console.log("item answers: ", item.answers);
+            // console.log("item answers: ", item.answers);
           });
 
-          console.log("value: ", value, " key: ", key);
+          // console.log("value: ", value, " key: ", key);
 
           return { questionId: key, answers, questionDescription, image };
         })
@@ -45,7 +47,32 @@ const DetailQuiz = () => {
     }
   };
 
-  return <div>components QuizDetail</div>;
+  return (
+    <div className="detail-quiz-container">
+      <div className="left-content">
+        <div className="title">
+          Quiz {quizId}: {location?.state?.quizTitle}
+        </div>
+        <div className="q-body">
+          <img src="" alt="" />
+        </div>
+        <div className="q-content">
+          <div className="question">Question 1: how are you doing?</div>
+          <div className="answer">
+            <div className="a-child">A. adlkfja</div>
+            <div className="a-child">B. alsdjfasd</div>
+            <div className="a-child">C. laksdjflkasdjflk</div>
+          </div>
+        </div>
+        <div className="footer">
+          <button className="btn btn-secondary">Prev</button>
+          <button className="btn btn-primary">Next</button>
+        </div>
+      </div>
+
+      <div className="right-content">right content</div>
+    </div>
+  );
 };
 
 export default DetailQuiz;
