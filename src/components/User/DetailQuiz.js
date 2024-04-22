@@ -19,7 +19,6 @@ const DetailQuiz = () => {
 
   const fetchQuestions = async () => {
     const res = await getDataQuiz(quizId);
-    console.log("check question: ", res);
 
     if (res && res.EC === 0) {
       const raw = res.DT;
@@ -39,20 +38,15 @@ const DetailQuiz = () => {
             }
             item.answers.isSelected = false;
             answers.push(item.answers);
-            // console.log("item answers: ", item.answers);
           });
-
-          // console.log("value: ", value, " key: ", key);
 
           return { questionId: key, answers, questionDescription, image };
         })
         .value();
 
-      console.log(data);
       setDataQuiz(data);
     }
   };
-  console.log(">>> check dataQuiz: ", dataQuiz);
 
   const handlePrev = () => {
     if (index - 1 < 0) return;
@@ -61,6 +55,35 @@ const DetailQuiz = () => {
 
   const handleNext = () => {
     if (dataQuiz && dataQuiz.length > index + 1) setIndex(index + 1);
+  };
+
+  const handleFinishQuiz = () => {
+    console.log(">>> Check data before submit: ", dataQuiz);
+    let payload = {
+      quizId: +quizId,
+      answers: [],
+    };
+
+    let answers = [];
+    if (dataQuiz && dataQuiz.length > 0) {
+      dataQuiz.forEach((question) => {
+        let questionId = question.questionId;
+        let userAnswerId = [];
+
+        question.answers.forEach((a) => {
+          if (a.isSelected) {
+            userAnswerId.push(a.id);
+          }
+        });
+        answers.push({
+          questionId: +questionId,
+          userAnswerId: userAnswerId,
+        });
+      });
+
+      payload.answers = answers;
+      console.log("final payload: ", payload);
+    }
   };
 
   const handleCheckBox = (answerId, questionId) => {
@@ -112,7 +135,10 @@ const DetailQuiz = () => {
           <button className="btn btn-primary" onClick={() => handleNext()}>
             Next
           </button>
-          <button className="btn btn-warning" onClick={() => handleNext()}>
+          <button
+            className="btn btn-warning"
+            onClick={() => handleFinishQuiz()}
+          >
             Finish
           </button>
         </div>
