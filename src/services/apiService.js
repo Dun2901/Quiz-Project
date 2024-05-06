@@ -1,4 +1,3 @@
-import { delay } from "lodash";
 import axios from "../utils/axiosCustomize";
 
 const postCreateNewUser = (email, password, username, role, image) => {
@@ -68,6 +67,20 @@ const getAllQuizForAdmin = (id) => {
   return axios.get("api/v1/quiz/all");
 };
 
+const putUpdateForAdmin = (id, name, description, difficulty, image) => {
+  const data = new FormData();
+  data.append("id", id);
+  data.append("description", description);
+  data.append("name", name);
+  data.append("difficulty", difficulty);
+  data.append("quizImage", image);
+  return axios.put("api/v1/quiz", data);
+};
+
+const deleteQuizForAdmin = (id) => {
+  return axios.delete(`api/v1/quiz/${id}`);
+};
+
 export {
   postCreateNewUser,
   getAllUsers,
@@ -81,4 +94,6 @@ export {
   postSubmitQuiz,
   postCreateNewQuiz,
   getAllQuizForAdmin,
+  putUpdateForAdmin,
+  deleteQuizForAdmin,
 };
