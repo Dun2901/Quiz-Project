@@ -22,6 +22,16 @@ const ModalUpdateQuiz = (props) => {
 
   useEffect(() => {
     if (!_.isEmpty(dataUpdate)) {
+      // Update state
+      setQuiz({
+        name: dataUpdate.name,
+        description: dataUpdate.description,
+      });
+      setDifficulty(dataUpdate.difficulty);
+      setImage("");
+      if (dataUpdate.image) {
+        setPreviewImage(`data:image/jpeg;base64,${dataUpdate.image}`);
+      }
     }
   }, [dataUpdate]);
 
@@ -47,6 +57,7 @@ const ModalUpdateQuiz = (props) => {
       return;
     }
 
+    // Submit api
     let data = await putUpdateForAdmin(
       dataUpdate.id,
       quiz.name,
