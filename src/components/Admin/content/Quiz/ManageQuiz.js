@@ -77,6 +77,8 @@ const ManageQuiz = (props) => {
       setName("");
       setDescription("");
       setImage(null);
+      const file = document.querySelector(".file");
+      file.value = "";
       await fetchQuiz();
     } else {
       toast.error(res.EM);
@@ -127,7 +129,7 @@ const ManageQuiz = (props) => {
                   <label className="mb-1">Upload Image</label>
                   <input
                     type="file"
-                    className="form-control"
+                    className="form-control file"
                     onChange={(e) => handleChangeFile(e)}
                   />
                 </div>
