@@ -3,6 +3,7 @@ import Select from "react-select";
 import { v4 as uuidv4 } from "uuid";
 import _ from "lodash";
 import "./Questions.scss";
+import Lightbox from "react-awesome-lightbox";
 import { BsFillPatchPlusFill } from "react-icons/bs";
 import { BsFillPatchMinusFill } from "react-icons/bs";
 import { AiFillPlusSquare } from "react-icons/ai";
@@ -32,6 +33,11 @@ const Questions = (props) => {
       ],
     },
   ]);
+  const [isPreviewImage, setIsPreviewImage] = useState(false);
+  const [dataImagePreview, setDataImagePreview] = useState({
+    title: "",
+    url: "",
+  });
 
   const handleAddRemoveQuestion = (type, id) => {
     if (type === "ADD") {
@@ -143,6 +149,21 @@ const Questions = (props) => {
     console.log(">>> questions: ", questions);
   };
 
+  const handlePreviewImage = (questionId) => {
+    let questionsClone = _.cloneDeep(questions);
+    let index = questionsClone.findIndex(
+      (question) => question.id === questionId
+    );
+
+    if (index > -1) {
+      setDataImagePreview({
+        url: URL.createObjectURL(questionsClone[index].imageFile),
+        title: questionsClone[index].imageName,
+      });
+      setIsPreviewImage(true);
+    }
+  };
+
   return (
     <div className="questions-container">
       <div className="title">Manage Questions</div>
@@ -188,9 +209,16 @@ const Questions = (props) => {
                       }
                     />
                     <span>
-                      {question.imageName
-                        ? question.imageName
-                        : "0 file is uploaded"}
+                      {question.imageName ? (
+                        <span
+                          style={{ cursor: "pointer" }}
+                          onClick={() => handlePreviewImage(question.id)}
+                        >
+                          {question.imageName}
+                        </span>
+                      ) : (
+                        "0 file is uploaded"
+                      )}
                     </span>
                   </div>
                   <div className="btn-add">
@@ -281,6 +309,14 @@ const Questions = (props) => {
               Save Questions
             </button>
           </div>
+        )}
+
+        {isPreviewImage === true && (
+          <Lightbox
+            image={dataImagePreview.url}
+            title={dataImagePreview.title}
+            onClose={() => setIsPreviewImage(false)}
+          />
         )}
       </div>
     </div>
