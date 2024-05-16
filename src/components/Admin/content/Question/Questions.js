@@ -9,6 +9,7 @@ import {
 } from "../../../../services/apiService";
 import "./Questions.scss";
 import Lightbox from "react-awesome-lightbox";
+import { toast } from "react-toastify";
 import { BsFillPatchPlusFill } from "react-icons/bs";
 import { BsFillPatchMinusFill } from "react-icons/bs";
 import { AiFillPlusSquare } from "react-icons/ai";
@@ -16,21 +17,24 @@ import { AiOutlineMinusCircle } from "react-icons/ai";
 import { RiImageAddFill } from "react-icons/ri";
 
 const Questions = (props) => {
-  const [questions, setQuestions] = useState([
+  const initQuestions = [
     {
       id: uuidv4(),
       description: "",
       imageFile: "",
       imageName: "",
+      isInvalidQuestion: false,
       answers: [
         {
           id: uuidv4(),
           description: "",
           isCorrect: false,
+          isInvalidAnswer: false,
         },
       ],
     },
-  ]);
+  ];
+  const [questions, setQuestions] = useState(initQuestions);
   const [isPreviewImage, setIsPreviewImage] = useState(false);
   const [dataImagePreview, setDataImagePreview] = useState({
     title: "",
@@ -110,12 +114,16 @@ const Questions = (props) => {
   const handleOnChange = (type, questionId, value) => {
     if (type === "QUESTION") {
       let questionsClone = _.cloneDeep(questions);
-
       let index = questionsClone.findIndex(
         (question) => question.id === questionId
       );
       if (index > -1) {
         questionsClone[index].description = value;
+
+        // Validate
+        const isQuestionInvalid =
+          questionsClone[index].description.trim() === "";
+        questionsClone[index].isInvalidQuestion = isQuestionInvalid;
         setQuestions(questionsClone);
       }
     }
@@ -149,6 +157,7 @@ const Questions = (props) => {
             }
             if (type === "INPUT") {
               answer.description = value;
+              answer.isInvalidAnswer = value.trim() === "";
             }
           }
           return answer;
@@ -161,28 +170,76 @@ const Questions = (props) => {
 
   const handleSubmitQuestionForQuiz = async () => {
     // Todo
-    // Validate
+    if (_.isEmpty(selectedQuiz)) {
+      toast.error("Please choose a Quiz!");
+      return;
+    }
+
+    // Validate answer
+    let isValidAnswer = true;
+    let questionsClone = _.cloneDeep(questions);
+    let indexA = 0,
+      indexQ = 0;
+
+    for (let i = 0; i < questionsClone.length; i++) {
+      for (let j = 0; j < questionsClone[i].answers.length; j++) {
+        if (!questionsClone[i].answers[j].description) {
+          isValidAnswer = false;
+          indexA = j;
+          questionsClone[i].answers[j].isInvalidAnswer = true;
+          break;
+        }
+      }
+
+      indexQ = i;
+      if (isValidAnswer === false) break;
+    }
+
+    if (isValidAnswer === false) {
+      setQuestions(questionsClone);
+      toast.error(`Not empty Answer ${indexA + 1} at Question ${indexQ + 1}`);
+      return;
+    }
+
+    // Validate question
+    let isValidQ = true;
+    let indexQ1 = 0;
+
+    for (let i = 0; i < questionsClone.length; i++) {
+      if (!questionsClone[i].description) {
+        console.log(questionsClone[i].description);
+        isValidQ = false;
+        indexQ1 = i;
+        questionsClone[i].isInvalidQuestion = true;
+        break;
+      }
+    }
+
+    if (isValidQ === false) {
+      setQuestions(questionsClone);
+      toast.error(`Not empty description for Question ${indexQ1 + 1}`);
+      return;
+    }
 
     // Submit questions
-    await Promise.all(
-      questions.map(async (question) => {
-        const q = await postCreateNewQuestionForQuiz(
-          selectedQuiz.value,
-          question.description,
-          question.imageFile
+    for (const question of questions) {
+      const q = await postCreateNewQuestionForQuiz(
+        +selectedQuiz.value,
+        question.description,
+        question.imageFile
+      );
+      // Submit answers
+      for (const answer of question.answers) {
+        await postCreateNewAnswerForQuestion(
+          answer.description,
+          answer.isCorrect,
+          q.DT.id
         );
-        // Submit answers
-        await Promise.all(
-          question.answers.map(async (answer) => {
-            await postCreateNewAnswerForQuestion(
-              answer.description,
-              answer.isCorrect,
-              q.DT.id
-            );
-          })
-        );
-      })
-    );
+      }
+    }
+
+    toast.success("Create questions and answers succed!");
+    setQuestions(initQuestions);
   };
 
   const handlePreviewImage = (questionId) => {
@@ -223,7 +280,9 @@ const Questions = (props) => {
                   <div className="form-floating description">
                     <input
                       type="text"
-                      className="form-control"
+                      className={`form-control ${
+                        question.isInvalidQuestion ? "is-invalid" : ""
+                      }`}
                       value={question.description}
                       placeholder="name@example.com"
                       onChange={(e) =>
@@ -294,7 +353,9 @@ const Questions = (props) => {
                         <div className="form-floating answer-name">
                           <input
                             type="text"
-                            className="form-control"
+                            className={`form-control ${
+                              answer.isInvalidAnswer ? "is-invalid" : ""
+                            }`}
                             value={answer.description}
                             placeholder="name@example.com"
                             onChange={(e) =>
