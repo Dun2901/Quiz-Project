@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import Select from "react-select";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import {
   getAllQuizForAdmin,
   getAllUsers,
@@ -43,7 +45,7 @@ const AssignQuiz = (props) => {
 
   const handleAssign = async () => {
     let res = await postAssignQuiz(selectedQuiz.value, selectedUser.value);
-    console.log(">>> check res: ", res);
+    toast.success(res.EM);
   };
 
   return (

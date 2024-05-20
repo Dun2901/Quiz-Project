@@ -4,9 +4,8 @@ import { v4 as uuidv4 } from "uuid";
 import _ from "lodash";
 import {
   getAllQuizForAdmin,
-  postCreateNewQuestionForQuiz,
-  postCreateNewAnswerForQuestion,
   getQuizWithQA,
+  postUpsertQA,
 } from "../../../../services/apiService";
 import "./QuizQA.scss";
 import Lightbox from "react-awesome-lightbox";
@@ -44,40 +43,37 @@ const QuizQA = (props) => {
 
   const [listQuiz, setListQuiz] = useState({});
   const [selectedQuiz, setSelectedQuiz] = useState({});
-  console.log(selectedQuiz);
 
   useEffect(() => {
     fetchQuiz();
   }, []);
 
   useEffect(() => {
-    const fetchQuizWithQA = async () => {
-      let res = await getQuizWithQA(selectedQuiz.value);
-      if (res && res.EC === 0) {
-        // Convert base64 to File object
-        let newQA = [];
-        for (let i = 0; i < res.DT.qa.length; i++) {
-          let q = res.DT.qa[i];
-          if (q.imageFile) {
-            q.imageName = `question-${q.id}.png`;
-            q.imageFile = await urltoFile(
-              `data:image/png;base64,${q.imageFile}`,
-              `question-${q.id}.png`,
-              "image/png"
-            );
-          }
-          newQA.push(q);
-        }
-        setQuestions(newQA);
-        console.log(">>> check newQA: ", newQA);
-        console.log(">>> check res: ", res);
-      }
-    };
-
     if (selectedQuiz && selectedQuiz.value) {
       fetchQuizWithQA();
     }
   }, [selectedQuiz]);
+
+  const fetchQuizWithQA = async () => {
+    let res = await getQuizWithQA(selectedQuiz.value);
+    if (res && res.EC === 0) {
+      // Convert base64 to File object
+      let newQA = [];
+      for (let i = 0; i < res.DT.qa.length; i++) {
+        let q = res.DT.qa[i];
+        if (q.imageFile) {
+          q.imageName = `question-${q.id}.png`;
+          q.imageFile = await urltoFile(
+            `data:image/png;base64,${q.imageFile}`,
+            `question-${q.id}.png`,
+            "image/png"
+          );
+        }
+        newQA.push(q);
+      }
+      setQuestions(newQA);
+    }
+  };
 
   const fetchQuiz = async () => {
     let res = await getAllQuizForAdmin();
@@ -273,26 +269,33 @@ const QuizQA = (props) => {
       return;
     }
 
-    // Submit questions
-    for (const question of questions) {
-      const q = await postCreateNewQuestionForQuiz(
-        +selectedQuiz.value,
-        question.description,
-        question.imageFile
-      );
-      // Submit answers
-      for (const answer of question.answers) {
-        await postCreateNewAnswerForQuestion(
-          answer.description,
-          answer.isCorrect,
-          q.DT.id
+    // Convert file object to base64
+    for (let i = 0; i < questionsClone.length; i++) {
+      if (questionsClone[i].imageFile) {
+        questionsClone[i].imageFile = await toBase64(
+          questionsClone[i].imageFile
         );
       }
     }
 
-    toast.success("Create questions and answers succed!");
-    setQuestions(initQuestions);
+    let res = await postUpsertQA({
+      quizId: selectedQuiz.value,
+      questions: questionsClone,
+    });
+
+    if (res && res.EC === 0) {
+      toast.success(res.EC);
+      fetchQuizWithQA();
+    }
   };
+
+  const toBase64 = (file) =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = reject;
+    });
 
   const handlePreviewImage = (questionId) => {
     let questionsClone = _.cloneDeep(questions);
