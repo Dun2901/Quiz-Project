@@ -6,6 +6,7 @@ import {
   getAllQuizForAdmin,
   postCreateNewQuestionForQuiz,
   postCreateNewAnswerForQuestion,
+  getQuizWithQA,
 } from "../../../../services/apiService";
 import "./QuizQA.scss";
 import Lightbox from "react-awesome-lightbox";
@@ -43,10 +44,40 @@ const QuizQA = (props) => {
 
   const [listQuiz, setListQuiz] = useState({});
   const [selectedQuiz, setSelectedQuiz] = useState({});
+  console.log(selectedQuiz);
 
   useEffect(() => {
     fetchQuiz();
   }, []);
+
+  useEffect(() => {
+    const fetchQuizWithQA = async () => {
+      let res = await getQuizWithQA(selectedQuiz.value);
+      if (res && res.EC === 0) {
+        // Convert base64 to File object
+        let newQA = [];
+        for (let i = 0; i < res.DT.qa.length; i++) {
+          let q = res.DT.qa[i];
+          if (q.imageFile) {
+            q.imageName = `question-${q.id}.png`;
+            q.imageFile = await urltoFile(
+              `data:image/png;base64,${q.imageFile}`,
+              `question-${q.id}.png`,
+              "image/png"
+            );
+          }
+          newQA.push(q);
+        }
+        setQuestions(newQA);
+        console.log(">>> check newQA: ", newQA);
+        console.log(">>> check res: ", res);
+      }
+    };
+
+    if (selectedQuiz && selectedQuiz.value) {
+      fetchQuizWithQA();
+    }
+  }, [selectedQuiz]);
 
   const fetchQuiz = async () => {
     let res = await getAllQuizForAdmin();
@@ -57,6 +88,25 @@ const QuizQA = (props) => {
       setListQuiz(newQuizzes);
     }
   };
+
+  // return a promise that resolves with a File instance
+  async function urltoFile(url, filename, mimeType) {
+    if (url.startsWith("data:")) {
+      var arr = url.split(","),
+        mime = arr[0].match(/:(.*?);/)[1],
+        bstr = atob(arr[arr.length - 1]),
+        n = bstr.length,
+        u8arr = new Uint8Array(n);
+      while (n--) {
+        u8arr[n] = bstr.charCodeAt(n);
+      }
+      var file = new File([u8arr], filename, { type: mime || mimeType });
+      return Promise.resolve(file);
+    }
+    const res = await fetch(url);
+    const buf = await res.arrayBuffer();
+    return new File([buf], filename, { type: mimeType });
+  }
 
   const handleAddRemoveQuestion = (type, id) => {
     if (type === "ADD") {

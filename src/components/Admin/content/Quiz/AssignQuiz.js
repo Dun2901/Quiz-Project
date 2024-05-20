@@ -3,6 +3,7 @@ import Select from "react-select";
 import {
   getAllQuizForAdmin,
   getAllUsers,
+  postAssignQuiz,
 } from "../../../../services/apiService";
 
 const AssignQuiz = (props) => {
@@ -21,7 +22,7 @@ const AssignQuiz = (props) => {
     let res = await getAllQuizForAdmin();
     if (res && res.EC === 0) {
       let newQuizzes = res.DT.map((quiz) => {
-        return { value: quiz.id, label: `${quiz.id} - ${quiz.description}` };
+        return { value: quiz.id, label: `${quiz.id} - ${quiz.name}` };
       });
       setListQuiz(newQuizzes);
     }
@@ -38,6 +39,11 @@ const AssignQuiz = (props) => {
       });
       setListUser(users);
     }
+  };
+
+  const handleAssign = async () => {
+    let res = await postAssignQuiz(selectedQuiz.value, selectedUser.value);
+    console.log(">>> check res: ", res);
   };
 
   return (
@@ -60,7 +66,9 @@ const AssignQuiz = (props) => {
         />
       </div>
       <div>
-        <button className="btn btn-warning mt-3">Assign</button>
+        <button className="btn btn-warning mt-3" onClick={() => handleAssign()}>
+          Assign
+        </button>
       </div>
     </div>
   );
