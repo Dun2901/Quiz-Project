@@ -5,6 +5,7 @@ import _ from "lodash";
 import "./DetailQuiz.scss";
 import ModalResult from "./ModalResult";
 import Question from "./Question";
+import RightContent from "./content/RightContent";
 
 const DetailQuiz = () => {
   const location = useLocation();
@@ -160,7 +161,9 @@ const DetailQuiz = () => {
         </div>
       </div>
 
-      <div className="right-content">right content</div>
+      <div className="right-content">
+        <RightContent dataQuiz={dataQuiz} />
+      </div>
       <ModalResult
         dataModalResult={dataModalResult}
         show={isShowModalResult}
