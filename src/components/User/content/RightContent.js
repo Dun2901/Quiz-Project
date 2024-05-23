@@ -1,11 +1,18 @@
 import React from "react";
+import CountDown from "./CountDown";
 
 const RightContent = (props) => {
   const { dataQuiz } = props;
 
+  const onTimeUp = () => {
+    props.handleFinishQuiz();
+  };
+
   return (
     <>
-      <div className="main-timer">10:10</div>
+      <div className="main-timer">
+        <CountDown onTimeUp={onTimeUp} />
+      </div>
       <div className="main-question">
         {dataQuiz &&
           dataQuiz.length > 0 &&
