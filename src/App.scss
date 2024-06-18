@@ -9,6 +9,12 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+.languages {
+  .dropdown-toggle::after {
+    content: none;
+  }
+}
+
 .app-container {
   .header-container {
     .btn-login {

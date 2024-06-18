@@ -8,6 +8,7 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./Register.scss";
 import { postRegister } from "../../services/apiService";
+import Language from "../Header/Language";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -70,6 +71,7 @@ const Register = () => {
         <button className="btn btn-light" onClick={() => navigate("/login")}>
           Log in
         </button>
+        <Language />
       </div>
       <div className="title col-4 mx-auto">Sign Up</div>
       <div className="welcome col-4 mx-auto">Start your journey?</div>

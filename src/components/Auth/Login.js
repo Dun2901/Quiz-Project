@@ -8,6 +8,7 @@ import "react-toastify/dist/ReactToastify.css";
 import "./Login.scss";
 import { doLogin } from "../../redux/action/userAction";
 import { CgSpinner } from "react-icons/cg";
+import Language from "../Header/Language";
 
 const Login = (props) => {
   const [email, setEmail] = useState("");
@@ -67,6 +68,7 @@ const Login = (props) => {
         <button className="btn btn-light" onClick={() => navigate("/register")}>
           Sign up
         </button>
+        <Language />
       </div>
       <div className="title col-4 mx-auto">Log In</div>
       <div className="welcome col-4 mx-auto">Hello, who's this</div>
