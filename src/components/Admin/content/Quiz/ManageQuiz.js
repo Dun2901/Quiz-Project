@@ -1,9 +1,6 @@
 import { useEffect, useState } from "react";
 import Select from "react-select";
-import {
-  getAllQuizForAdmin,
-  postCreateNewQuiz,
-} from "../../../../services/apiService";
+import { getAllQuizForAdmin, postCreateNewQuiz } from "../../../../services/apiService";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Accordion from "react-bootstrap/Accordion";
@@ -95,9 +92,7 @@ const ManageQuiz = (props) => {
           <Accordion.Body>
             <div className="add-new">
               <fieldset className="border rounded-3 p-3">
-                <legend className="float-none w-auto px-3">
-                  Add new Quiz:
-                </legend>
+                <legend className="float-none w-auto px-3">Add new Quiz:</legend>
 
                 <div className="form-floating mb-3">
                   <input

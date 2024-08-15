@@ -89,11 +89,7 @@ const postCreateNewQuestionForQuiz = (quiz_id, description, questionImage) => {
   return axios.post("api/v1/question", data);
 };
 
-const postCreateNewAnswerForQuestion = (
-  description,
-  correct_answer,
-  question_id
-) => {
+const postCreateNewAnswerForQuestion = (description, correct_answer, question_id) => {
   return axios.post("api/v1/answer", {
     description,
     correct_answer,
@@ -120,6 +116,10 @@ const logout = (email, refresh_token) => {
   return axios.post("api/v1/logout", { email, refresh_token });
 };
 
+const getOverview = () => {
+  return axios.get("api/v1/overview");
+};
+
 export {
   postCreateNewUser,
   getAllUsers,
@@ -141,4 +141,5 @@ export {
   getQuizWithQA,
   postUpsertQA,
   logout,
+  getOverview,
 };
