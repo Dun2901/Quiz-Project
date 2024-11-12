@@ -1,9 +1,22 @@
+import { Outlet } from "react-router-dom";
+import PerfectScrollbar from "react-perfect-scrollbar";
 import "./App.scss";
+import Header from "./components/Header/Header";
 
 const App = () => {
   return (
     <div className="app-container">
-      <button>hello</button>
+      <div className="header-container">
+        <Header />
+      </div>
+      <div className="main-container">
+        <div className="sidenav-container"></div>
+        <div className="app-content">
+          <PerfectScrollbar>
+            <Outlet />
+          </PerfectScrollbar>
+        </div>
+      </div>
     </div>
   );
 };
